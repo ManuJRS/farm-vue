@@ -62,8 +62,8 @@ function onSecondary() {
     :Description="Data?.Description ?? ''"
     :Items="Data?.Items ?? []"
   />
-
+  <!--
   <section class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <pre class="text-xs whitespace-pre-wrap">{{ Acf }}</pre>
-  </section>
+  </section> -->
 </template>
