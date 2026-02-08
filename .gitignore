@@ -1,0 +1,88 @@
+# =========================
+# Node / Package managers
+# =========================
+node_modules/
+.pnpm-store/
+.pnp.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# =========================
+# Build / Dist
+# =========================
+dist/
+dist-ssr/
+build/
+.output/
+.vite/
+.cache/
+
+# =========================
+# Env files (SECRETS)
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# Local config / OS
+# =========================
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# =========================
+# Editors / IDEs
+# =========================
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# =========================
+# Logs
+# =========================
+logs/
+*.log
+
+# =========================
+# Testing / Coverage
+# =========================
+coverage/
+cypress/screenshots/
+cypress/videos/
+
+# =========================
+# TypeScript
+# =========================
+*.tsbuildinfo
+
+# =========================
+# Temporary / Backup files
+# =========================
+*.tmp
+*.bak
+*.swp
+*.orig
+
+# =========================
+# Netlify / Vercel
+# =========================
+.netlify/
+.vercel/
+
+# =========================
+# WordPress / API responses (si haces dumps locales)
+# =========================
+wp-content/uploads/
+*.sql
+*.sqlite
