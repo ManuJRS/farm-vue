@@ -16,6 +16,7 @@ const router = createRouter({
     { path: ROUTES.Contact, component: () => import('@/views/ContactView.vue') },
     { path: ROUTES.Privacy, component: () => import('@/views/PrivacyView.vue') },
     { path: ROUTES.Terms, component: () => import('@/views/TermsView.vue') },
+    { path: ROUTES.ServiceIntern, component: () => import('@/views/ServiceView.vue') },
   ],
 })
 
