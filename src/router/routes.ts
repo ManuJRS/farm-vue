@@ -5,5 +5,6 @@ export const ROUTES = {
   Contact: '/contacto',
   Privacy: '/privacidad',
   Terms: '/terminos',
-  ServiceIntern: '/service-detail',
+  // ServiceIntern: '/service-detail',
+  ServiceIntern: '/servicios/:slug',
 }

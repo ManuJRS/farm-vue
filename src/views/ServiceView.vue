@@ -1,94 +1,60 @@
 <script setup lang="ts">
-import { computed, reactive } from 'vue'
-import { ChevronRight, Banknote, Clock5, FlaskConical } from 'lucide-vue-next'
+import { computed, reactive, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import { useService } from '@/composables/useServiceDetail'
 
-type ServiceAccordion = {
-  Id: string
-  Icon: string
-  Title: string
-  Type: 'list' | 'text'
-  Items?: string[]
-  Text?: string
-  Open?: boolean
+import {
+  ChevronRight,
+  Banknote,
+  Clock5,
+  FlaskConical,
+  NotepadText,
+  ChevronUp,
+  ChevronDown,
+  SquareActivity,
+  Ambulance,
+} from 'lucide-vue-next'
+
+const route = useRoute()
+const slug = computed(() => String(route.params.slug || ''))
+
+const { service: Service } = useService(() => slug.value)
+
+const inAccordionRequerimentOpen = ref(false)
+const inAccordionPostStudyOpen = ref(false)
+const inAccordionPostCareOpen = ref(false)
+
+// handlers
+const onToggleRequeriments = (event: Event) => {
+  const details = event.currentTarget as HTMLDetailsElement | null
+  if (!details) return
+  inAccordionRequerimentOpen.value = details.open
 }
 
-type ServiceDetail = {
-  Breadcrumbs: { Label: string; Href?: string }[]
-  Title: string
-  Description: string
-  StatsLabelPrice: string
-  StatsLabelDelivery: string
-  StatsLabelType: string
-  StatsValuePrice: number
-  StatsValueDelivery: number
-  StatsValueType: string
-  Accordions: ServiceAccordion[]
-  Form: {
-    Title: string
-    Subtitle: string
-    ServiceLabel: string
-    SubmitLabel: string
-    SecureLabel: string
-  }
+const onTogglePostStudy = (event: Event) => {
+  const details = event.currentTarget as HTMLDetailsElement | null
+  if (!details) return
+  inAccordionPostStudyOpen.value = details.open
 }
 
-const Service = reactive<ServiceDetail>({
-  Breadcrumbs: [
-    { Label: 'Home', Href: '/' },
-    { Label: 'Services', Href: '/services' },
-    { Label: 'Routine Blood Panel' },
-  ],
-  Title: 'Routine Blood Panel',
-  Description:
-    'A comprehensive diagnostic test to evaluate your overall health and detect a wide range of disorders, including anemia, infection, and leukemia.',
-  StatsLabelPrice: 'Price',
-  StatsLabelDelivery: 'Delivery Time',
-  StatsLabelType: 'Sample Type',
-  StatsValuePrice: 45.0,
-  StatsValueDelivery: 24,
-  StatsValueType: 'Blood',
-  Accordions: [
-    {
-      Id: 'requirements',
-      Icon: 'clinical_notes',
-      Title: 'Requirements & Preparation',
-      Type: 'list',
-      Open: true,
-      Items: [
-        'A minimum of 8 to 12 hours of fasting is required before the blood draw.',
-        'You may drink plain water, but avoid coffee, tea, or juice during the fasting period.',
-        'Inform our technicians if you are taking any regular medications or supplements.',
-        'We recommend scheduling your appointment for early morning.',
-      ],
-    },
-    {
-      Id: 'post-care',
-      Icon: 'medical_services',
-      Title: 'Post-study Care',
-      Type: 'text',
-      Text: `Keep the bandage on for at least 30 minutes following the draw to prevent bruising.
-Avoid heavy lifting or intense exercise with the arm used for the blood draw for the remainder of the day.
-Stay hydrated and eat a small snack immediately after the procedure if you were fasting.`,
-    },
-    {
-      Id: 'delivery-detail',
-      Icon: 'local_shipping',
-      Title: 'Detailed Delivery Times',
-      Type: 'text',
-      Text: `Results for the Routine Blood Panel are typically available within 24 hours. You will receive an SMS notification and email with a secure link to download your report via our Patient Portal.`,
-    },
-  ],
-  Form: {
-    Title: 'Request Service',
-    Subtitle: 'Fill in your details and our team will contact you to finalize your appointment.',
-    ServiceLabel: 'Service',
-    SubmitLabel: 'Request Service',
-    SecureLabel: 'Secure Professional Service',
+const onTogglePostCare = (event: Event) => {
+  const details = event.currentTarget as HTMLDetailsElement | null
+  if (!details) return
+  inAccordionPostCareOpen.value = details.open
+}
+
+watch(
+  () => Service.value,
+  (s) => {
+    inAccordionRequerimentOpen.value = s.AcordionRequerimentsOpen
+    inAccordionPostStudyOpen.value = s.AcordionPostStudyOpen
+    inAccordionPostCareOpen.value = s.AcordionPostCareOpen
   },
-})
+  { immediate: true },
+)
 
 const BreadcrumbLast = computed(
-  () => Service.Breadcrumbs[Service.Breadcrumbs.length - 1]?.Label ?? '',
+  () => Service.value.Breadcrumbs[Service.value.Breadcrumbs.length - 1]?.Label ?? '',
 )
 
 const FormState = reactive({
@@ -99,10 +65,7 @@ const FormState = reactive({
 })
 
 function onSubmit() {
-  console.log('Submit', {
-    Service: Service.Title,
-    ...FormState,
-  })
+  console.log('Submit', { Service: Service.value.Title, ...FormState })
 }
 </script>
 
@@ -146,30 +109,6 @@ function onSubmit() {
         <div
           class="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm"
         >
-          <!-- <div
-            v-for="(Stat, idx) in Service.Stats"
-            :key="idx"
-            class="flex items-center gap-4 px-4"
-            :class="{
-              'sm:border-r border-slate-100 dark:border-slate-800':
-                idx !== Service.Stats.length - 1,
-            }"
-          >
-            <span class="material-symbols-outlined text-primary text-3xl">
-              {{ Stat.Icon }}
-            </span>
-            <div>
-              <p
-                class="text-[10px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500"
-              >
-                {{ Stat.Label }}
-              </p>
-              <p class="text-lg font-bold text-slate-900 dark:text-white">
-                {{ Stat.Value }}
-              </p>
-            </div>
-          </div> -->
-
           <div
             class="flex items-center gap-4 px-4 sm:border-r border-slate-100 dark:border-slate-800"
           >
@@ -219,42 +158,120 @@ function onSubmit() {
         </div>
 
         <div class="space-y-4">
-          <details
-            v-for="Section in Service.Accordions"
-            :key="Section.Id"
-            class="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden"
-            :open="Section.Open || false"
-          >
+          <details :open="inAccordionRequerimentOpen" @toggle="onToggleRequeriments" class="group">
             <summary
-              class="flex items-center justify-between p-5 cursor-pointer list-none hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
+              :class="[
+                'flex items-center justify-between p-5 cursor-pointer list-none hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors bg-white dark:bg-slate-900 border rounded-t-lg',
+                inAccordionRequerimentOpen ? 'bg-slate-50 border-b-0' : 'bg-white rounded-lg',
+              ]"
             >
+              <div class="flex gap-2">
+                <span class="material-symbols-outlined text-primary"><NotepadText /></span>
+                <p class="font-bold">{{ Service.AcordionRequerimentsTitle }}</p>
+              </div>
+
               <span
-                class="text-base font-bold text-slate-800 dark:text-slate-100 flex items-center gap-3"
+                class="material-symbols-outlined transition-transform text-slate-400 group-open:rotate-180"
               >
-                <span class="material-symbols-outlined text-primary">{{ Section.Icon }}</span>
-                {{ Section.Title }}
-              </span>
-              <span
-                class="material-symbols-outlined group-open:rotate-180 transition-transform text-slate-400"
-              >
-                expand_more
+                <div v-if="inAccordionRequerimentOpen">
+                  <ChevronUp />
+                </div>
+                <div v-else>
+                  <ChevronDown />
+                </div>
               </span>
             </summary>
 
             <div
-              class="p-6 pt-0 border-t border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-400 text-sm leading-relaxed"
+              class="overflow-hidden transition-all duration-700 ease-in-out max-h-0 opacity-0 group-open:max-h-[500px] group-open:opacity-100 border border-t-0 rounded-b-lg"
             >
-              <div class="pt-4">
-                <ul v-if="Section.Type === 'list'" class="list-disc ml-5 space-y-3">
-                  <li v-for="(Item, idx) in Section.Items || []" :key="idx">
-                    {{ Item }}
+              <div
+                class="p-6 pt-4 border-t border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-400 text-sm leading-relaxed bg-white shadow-sm"
+              >
+                <ul class="list-disc ml-5 space-y-3">
+                  <li v-for="(item, index) in Service.AcordionRequerimentsItems" :key="index">
+                    {{ item }}
                   </li>
                 </ul>
-
-                <div v-else class="space-y-2">
-                  <p v-for="(Line, idx) in (Section.Text || '').split('\n')" :key="idx">
-                    {{ Line }}
-                  </p>
+              </div>
+            </div>
+          </details>
+        </div>
+        <div class="space-y-4">
+          <details :open="inAccordionPostStudyOpen" @toggle="onTogglePostStudy" class="group">
+            <summary
+              :class="[
+                'flex items-center justify-between p-5 cursor-pointer list-none hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors bg-white dark:bg-slate-900 border rounded-t-lg',
+                inAccordionPostStudyOpen ? 'bg-slate-50 border-b-0' : 'bg-white rounded-lg',
+              ]"
+            >
+              <div class="flex gap-2">
+                <span class="material-symbols-outlined text-primary"><SquareActivity /></span>
+                <p class="font-bold">{{ Service.AcordionPostStudyTitle }}</p>
+              </div>
+              <span
+                class="material-symbols-outlined group-open:rotate-180 transition-transform text-slate-400"
+              >
+                <div v-if="inAccordionPostStudyOpen">
+                  <ChevronUp />
+                </div>
+                <div v-if="!inAccordionPostStudyOpen">
+                  <ChevronDown />
+                </div>
+              </span>
+            </summary>
+            <div
+              class="overflow-hidden transition-all duration-700 ease-in-out max-h-0 opacity-0 group-open:max-h-[500px] group-open:opacity-100 border border-t-0 rounded-b-lg"
+            >
+              <div
+                class="p-6 pt-0 border-t border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-400 text-sm leading-relaxed bg-white shadow-sm"
+              >
+                <div class="pt-4">
+                  <ul class="list-disc ml-5 space-y-3">
+                    <li v-for="(item, index) in Service.AcordionPostStudyItems" :key="index">
+                      {{ item }}
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </details>
+        </div>
+        <div class="space-y-4">
+          <details :open="inAccordionPostCareOpen" @toggle="onTogglePostCare" class="group">
+            <summary
+              :class="[
+                'flex items-center justify-between p-5 cursor-pointer list-none hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors bg-white dark:bg-slate-900 border rounded-t-lg',
+                inAccordionPostCareOpen ? 'bg-slate-50 border-b-0' : 'bg-white rounded-lg',
+              ]"
+            >
+              <div class="flex gap-2">
+                <span class="material-symbols-outlined text-primary"><Ambulance /></span>
+                <p class="font-bold">{{ Service.AcordionPostCareTitle }}</p>
+              </div>
+              <span
+                class="material-symbols-outlined group-open:rotate-180 transition-transform text-slate-400"
+              >
+                <div v-if="inAccordionPostCareOpen">
+                  <ChevronUp />
+                </div>
+                <div v-if="!inAccordionPostCareOpen">
+                  <ChevronDown />
+                </div>
+              </span>
+            </summary>
+            <div
+              class="overflow-hidden transition-all duration-700 ease-in-out max-h-0 opacity-0 group-open:max-h-[500px] group-open:opacity-100 border border-t-0 rounded-b-lg"
+            >
+              <div
+                class="p-6 pt-0 border-t border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-400 text-sm leading-relaxed bg-white shadow-sm"
+              >
+                <div class="pt-4">
+                  <ul class="list-disc ml-5 space-y-3">
+                    <li v-for="(item, index) in Service.AcordionPostCareItems" :key="index">
+                      {{ item }}
+                    </li>
+                  </ul>
                 </div>
               </div>
             </div>

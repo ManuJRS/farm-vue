@@ -7,7 +7,6 @@ import CertificationsSection from '@/components/home/CertificationsSection.vue'
 import { useHome } from '@/composables/useHome'
 
 const { Data, Infrastructure, Hero, IsLoading, ErrorMessage } = useHome()
-
 const Acf = ref<Record<string, any> | null>(null)
 
 onMounted(async () => {
