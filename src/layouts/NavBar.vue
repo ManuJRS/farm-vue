@@ -2,7 +2,7 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { ROUTES } from '@/router/routes'
-import { Menu } from 'lucide-vue-next'
+import { Menu, Microscope } from 'lucide-vue-next'
 
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
@@ -45,7 +45,12 @@ watch(
       <div class="flex items-center justify-between h-16">
         <div class="flex items-center gap-4 md:gap-8">
           <RouterLink :to="ROUTES.Home">
-            <span class="material-symbols-outlined text-primary text-3xl">biotech</span>
+            <div class="flex gap-4">
+              <span class="material-symbols-outlined text-primary text-3xl"
+                ><Microscope class="w-8 h-8"
+              /></span>
+              <p class="font-bold text-2xl">FarmaWeb</p>
+            </div>
           </RouterLink>
 
           <nav class="hidden md:flex items-center gap-6">
